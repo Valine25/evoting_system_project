@@ -1,0 +1,44 @@
+CREATE DATABASE IF NOT EXISTS evmsys;
+USE evmsys;
+
+-- Admin Table
+CREATE TABLE admin (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL
+);
+
+-- Candidates Table
+CREATE TABLE candidates (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    department VARCHAR(100) NOT NULL,
+    position VARCHAR(50) NOT NULL,
+    photo VARCHAR(255) NOT NULL
+);
+
+-- Elections Table
+CREATE TABLE elections (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    start_date DATE NOT NULL,
+    end_date DATE NOT NULL
+);
+
+-- Vote Counts Table
+CREATE TABLE vote_counts (
+    candidate_id INT NOT NULL,
+    position VARCHAR(255) NOT NULL,
+    vote_count INT NOT NULL DEFAULT 0,
+    PRIMARY KEY (candidate_id, position),
+    FOREIGN KEY (candidate_id) REFERENCES candidates(id) ON DELETE CASCADE
+);
+
+-- Voters Table
+CREATE TABLE voters (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    name VARCHAR(250) NOT NULL
+);

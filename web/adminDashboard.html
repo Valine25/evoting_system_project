@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Admin Dashboard - eVoting System</title>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=M+PLUS+Rounded+1c&family=Oswald:wght@200..700&family=Signika:wght@300..700&family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+        <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <div class="dashboard-container">
+            <aside class="sidebar">
+                <div class="logo">Content</div>
+                <nav class="navigation">
+                    <ul>
+                        <li><a href="#" onclick="showSection('overview')"><i class="fas fa-chart-pie"></i> Overview</a></li>
+                        <li><a href="#" onclick="showSection('voters')"><i class="fas fa-users"></i> Voters</a></li>
+                        <li><a href="#" onclick="showSection('candidates')"><i class="fas fa-user-tie"></i> Candidates</a></li>
+                        <li><a href="#" onclick="showSection('results')"><i class="fas fa-poll"></i> Results</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <main class="main-content">
+                <header>
+                    <h1>Admin Dashboard</h1>
+                </header>
+
+                <!-- Overview Section -->
+                <section id="overview" class="dashboard-section active">
+                    <h2>Overview</h2>
+                    <div class="cards">
+                        <div class="card">
+                            <h3>Total Voters</h3>
+                            <p id="total-voters">1200</p>
+                        </div>
+                        <div class="card">
+                            <h3>Candidates</h3>
+                            <p id="total-candidates">20</p>
+                        </div>
+                        <div class="card">
+                            <h3>Active Elections</h3>
+                            <p id="active-elections">3</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Voters Section -->
+                <section id="voters" class="dashboard-section ">
+                    <h2>Manage Voters</h2>
+                    <button class="btn" onclick="openVoterForm()">Add Voter</button>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Password</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="voterTableBody"></tbody>
+                    </table>
+
+                    <div id="voterFormModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close-btn" onclick="closeVoterForm()">&times;</span>
+                            <h3 class="modal-header">Add New Voter</h3>
+                            <form id="voterForm" method="POST" action="AddVoterServlet">
+                                <input type="hidden" name="id" id="voterId">
+                                <input type="text" name="name" placeholder="Name" required />
+                                <input type="email" name="email" placeholder="Email" required />
+                                <input type="password" name="password" placeholder="Password" required />
+                                <button type="submit" class="btn">Save</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Candidates Section -->
+                <section id="candidates" class="dashboard-section">
+                    <h2>Manage Candidates</h2>
+                    <button class="btn" onclick="openCandidateForm()">Add Candidate</button>
+
+                    <div class="modal" id="candidateFormModal">
+                        <div class="modal-content">
+                            <span class="close-btn" onclick="closeCandidateForm()">&times;</span>
+                            <h3 class="modal-header-candidate">Add Candidate</h3>
+                            <form id="candidateForm" method="POST" enctype="multipart/form-data" action="AddCandidateServlet">
+                                <input type="hidden" name="id" id="candidateId"> <!-- This is crucial for updates -->
+
+                                <input type="text" name="name" placeholder="Full Name" required />
+                                <input type="email" name="email" placeholder="Email/ID" required />
+                                <input type="text" name="department" placeholder="Department" required />
+
+                                <select name="position" required>
+                                    <option value="President">President</option>
+                                    <option value="Vice President">Vice President</option>
+                                    <option value="Secretary">Secretary</option>
+                                    <option value="Treasurer">Treasurer</option>
+                                    <option value="Representative">Representative</option>
+                                </select>
+
+                                <input type="file" name="photo" accept="image/*" />
+
+                                <button class="btn" type="submit">Save</button>
+                            </form>
+
+                        </div>
+
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th>Position</th>
+                                <th>Photo</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="candidateTableBody">
+                        </tbody>
+                    </table>
+                </section>
+
+                <!-- Results Section -->
+                <section id="results" class="dashboard-section">
+                    <h2>Election Results</h2>
+
+                    <div class="results-actions">
+                        <button class="btn" onclick="downloadFinalResults()">Download Results</button>
+                        <button class="btn reset-btn" onclick="resetResults()">Reset Results</button>
+                    </div>
+
+                    <div id="resultsMessage"></div>
+                </section>
+
+            </main>
+        </div>
+
+        <script>
+            function showSection(id) {
+                document.querySelectorAll('.dashboard-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                document.getElementById(id).classList.add('active');
+            }
+
+            function openVoterForm() {
+                document.getElementById('voterFormModal').style.display = 'block';
+                document.getElementById('voterForm').reset();
+                document.getElementById('voterForm').action = "AddVoterServlet";
+                document.getElementById('voterId').value = "";
+                document.querySelector('.modal-header').textContent = "Add New Voter";
+                document.querySelector('#voterForm .btn').textContent = "Save";
+            }
+
+
+            function editVoter(id, name, email, password) {
+                document.getElementById('voterFormModal').style.display = 'block';
+
+                // Fill values
+                document.getElementById('voterId').value = id;
+                document.querySelector('#voterForm input[name="name"]').value = name;
+                document.querySelector('#voterForm input[name="email"]').value = email;
+                document.querySelector('#voterForm input[name="password"]').value = password;
+
+                // Change action to update
+                document.getElementById('voterForm').action = "UpdateVoterServlet";
+
+                // Update labels
+                document.querySelector('.modal-header').textContent = "Edit Voter";
+                document.querySelector('#voterForm .btn').textContent = "Update";
+            }
+
+
+            function closeVoterForm() {
+                document.getElementById('voterFormModal').style.display = 'none';
+            }
+
+            function openCandidateForm() {
+                document.getElementById('candidateFormModal').style.display = 'block';
+                document.getElementById('candidateForm').reset();
+                document.getElementById('candidateForm').action = "AddCandidateServlet";
+                document.getElementById('candidateId').value = "";
+                document.querySelector('.modal-header-candidate').textContent = "Add New Candidate";
+                document.querySelector('#candidateForm .btn').textContent = "Save";
+            }
+
+            function editCandidate(id, name, email, department, position) {
+                document.getElementById('candidateFormModal').style.display = 'block';
+
+                document.getElementById('candidateId').value = id;
+                document.querySelector('#candidateForm input[name="name"]').value = name;
+                document.querySelector('#candidateForm input[name="email"]').value = email;
+                document.querySelector('#candidateForm input[name="department"]').value = department;
+
+                document.getElementById('candidateForm').action = "UpdateCandidateServlet";
+                document.querySelector('.modal-header-candidate').textContent = "Edit Candidate";
+                document.querySelector('#candidateForm .btn').textContent = "Update";
+            }
+            function closeCandidateForm() {
+                document.getElementById('candidateFormModal').style.display = 'none';
+            }
+
+            function closeResultsModal() {
+                document.getElementById('resultsModal').style.display = 'none';
+            }
+
+            window.onclick = function (event) {
+                ['voterFormModal', 'addCandidateModal', 'resultsModal'].forEach(id => {
+                    const modal = document.getElementById(id);
+                    if (modal && event.target == modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+            };
+            function deleteVoter(id) {
+                if (confirm("Are you sure you want to delete this voter?")) {
+                    fetch("DeleteVoterServlet?id=" + id, {method: "GET"})
+                            .then(res => {
+                                if (!res.ok)
+                                    throw new Error("Failed to delete");
+                                loadVoters();
+                            })
+                            .catch(err => console.error("Delete error:", err));
+                }
+            }
+
+            function loadVoters() {
+                fetch("GetVotersServlet")
+                        .then(response => response.text())
+                        .then(data => {
+                            document.getElementById("voterTableBody").innerHTML = data;
+                        })
+                        .catch(error => console.error("Error loading voters:", error));
+            }
+            function deleteCandidate(id) {
+                if (confirm("Are you sure you want to delete this candidate?")) {
+                    fetch("DeleteCandidateServlet?id=" + id, {method: "GET"})
+                            .then(res => {
+                                if (!res.ok)
+                                    throw new Error("Failed to delete");
+                                loadCandidates();
+                            })
+                            .catch(err => console.error("Delete error:", err));
+                }
+            }
+            function loadCandidates() {
+                fetch("GetCandidateServlet")
+                        .then(response => response.text())
+                        .then(data => {
+                            document.getElementById("candidateTableBody").innerHTML = data;
+                        })
+                        .catch(error => console.error("Error loading candidates:", error));
+            }
+
+
+            function downloadResults(electionName) {
+                const results = getElectionResults(electionName);
+                const csv = `Election Name,Date,Total Votes,Winner\n${results.name},${results.date},${results.totalVotes},${results.winner}`;
+                const blob = new Blob([csv], {type: "text/csv;charset=utf-8;"});
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = `${electionName}_results.csv`;
+                link.click();
+            }
+
+
+
+
+            window.onload = () => {
+                loadVoters();
+                loadCandidates();
+            };
+            function downloadFinalResults() {
+                // Redirect to servlet that generates CSV
+                window.location.href = "DownloadResultServlet";
+            }
+
+            function resetResults() {
+                if (confirm("Are you sure you want to reset all results? This cannot be undone.")) {
+                    fetch("ResetResultsServlet", {method: "POST"})
+                            .then(response => {
+                                if (!response.ok)
+                                    throw new Error("Reset failed");
+                                return response.text();
+                            })
+                            .then(msg => {
+                                document.getElementById("resultsMessage").textContent = msg;
+                            })
+                            .catch(err => {
+                                console.error("Error resetting results:", err);
+                                document.getElementById("resultsMessage").textContent = "Error resetting results.";
+                            });
+                }
+            }
+
+
+
+        </script>
+    </body>
+</html>

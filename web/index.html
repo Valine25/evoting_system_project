@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <title>E-Voting System</title>
+
+        <!-- Bootstrap 5 -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:ital,wght@0,100..700;1,100..700&family=M+PLUS+Rounded+1c&family=Oswald:wght@200..700&family=Signika:wght@300..700&family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+        <style>
+            body {
+                height: 100vh;
+                background: hsl(281, 42%, 29%);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-family: "Signika", sans-serif;
+                margin: 0;
+            }
+
+
+            .container {
+                text-align: center;
+            }
+
+            .option-card {
+                background: #ff66ff;
+                border-radius: 20px;
+                padding: 50px 30px;
+                margin: 20px;
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+                transition: transform 0.3s, box-shadow 0.3s;
+                cursor: pointer;
+            }
+            .option-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
+                background: #f497e3;
+                color: white;
+            }
+
+            .title {
+                font-size: 2.5rem;
+                font-weight: bold;
+                margin-bottom: 40px;
+                color: white;
+            }
+
+        </style>
+    </head>
+
+    <body>
+
+        <div class="container">
+            <div class="title">Welcome to E-Voting System</div>
+
+            <div class="row justify-content-center">
+                <div class="col-md-4">
+                    <div class="option-card" onclick="location.href = 'voterLogin.html'">
+                        <h3>Voter Login</h3>
+                        <p>Login to cast your vote securely</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="option-card" onclick="location.href = 'adminLogin.html'">
+                        <h3>Admin Login</h3>
+                        <p>Manage elections and results</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bootstrap Bundle -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    </body>
+
+</html>

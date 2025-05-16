@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Vote Now</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: beige;
+                margin: 0;
+                padding: 0;
+                color: #333;
+            }
+
+            h1 {
+                text-align: center;
+                margin-top: 30px;
+                font-size: 36px;
+                color: #2c3e50;
+            }
+
+            .candidate-list {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 20px;
+                margin-top: 30px;
+            }
+
+            .candidate {
+                background-color: #ffffff;
+                border-radius: 12px;
+                padding: 50px;
+                width: 220px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                text-align: center;
+                transition: transform 0.3s ease;
+            }
+
+            .candidate:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+            }
+
+            .candidate img {
+                width: 250px;
+                height: 250px;
+                border-radius: 50%;
+                background-color: black;
+                object-fit: contain;
+                margin-bottom: 15px;
+            }
+
+            .candidate h3 {
+                font-size: 18px;
+                color: #34495e;
+                margin-bottom: 10px;
+            }
+
+            .candidate label {
+                font-size: 16px;
+                color: #34495e;
+            }
+
+            .candidate input[type="radio"] {
+                margin-right: 10px;
+            }
+
+            .position-heading {
+                text-align: center;
+                margin-top: 40px;
+                font-size: 28px;
+                color: #2c3e50;
+            }
+
+            .container {
+                width: 90%;
+                margin: 0 auto;
+                padding: 20px;
+            }
+
+            .submit-btn {
+                display: block;
+                width: 200px;
+                margin: 30px auto;
+                padding: 12px 20px;
+                font-size: 18px;
+                background-color: green;
+                color: white;
+                border: none;
+                border-radius: 25px;
+                cursor: pointer;
+                text-align: center;
+                transition: background-color 0.3s;
+            }
+
+            .submit-btn:hover {
+                background-color: #33ff33;
+            }
+
+            @media (max-width: 768px) {
+                .candidate-list {
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                .candidate {
+                    width: 80%;
+                    margin-bottom: 20px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Cast your vote wisely!</h1>
+
+            <!-- ✅ Natural submission using POST -->
+            <form id="voteForm" method="POST" action="SaveVotesServlet">
+                <div class="position-heading"><h2>President</h2></div>
+                <div id="president" class="candidate-list"></div>
+
+                <div class="position-heading"><h2>Vice President</h2></div>
+                <div id="vicePresident" class="candidate-list"></div>
+
+                <div class="position-heading"><h2>Secretary</h2></div>
+                <div id="secretary" class="candidate-list"></div>
+
+                <div class="position-heading"><h2>Treasurer</h2></div>
+                <div id="treasurer" class="candidate-list"></div>
+
+                <div class="position-heading"><h2>Representative</h2></div>
+                <div id="representative" class="candidate-list"></div>
+
+                <button class="submit-btn" type="submit">Submit</button>
+            </form>
+        </div>
+
+        <script>
+            function loadCandidates() {
+                fetch('GetCandidateForVotingServlet')
+                        .then(response => response.json())
+                        .then(data => {
+                            displayCandidates('president', data.candidates.president);
+                            displayCandidates('vicePresident', data.candidates.vicePresident);
+                            displayCandidates('secretary', data.candidates.secretary);
+                            displayCandidates('treasurer', data.candidates.treasurer);
+                            displayCandidates('representative', data.candidates.representative);
+                        })
+                        .catch(error => console.error('Error loading candidates:', error));
+            }
+
+            function displayCandidates(elementId, candidates) {
+                const container = document.getElementById(elementId);
+                container.innerHTML = '';
+                candidates.forEach(candidate => {
+                    const candidateDiv = document.createElement('div');
+                    candidateDiv.classList.add('candidate');
+
+                    candidateDiv.innerHTML = `
+                        <img src="/EVC/images/${candidate.photoUrl}" alt="${candidate.name}">
+                        <h3>${candidate.name}</h3>
+                        <label>
+                            <input type="radio" name="${elementId}" value="${candidate.id}" required>
+                            Select
+                        </label>
+                    `;
+                    container.appendChild(candidateDiv);
+                });
+            }
+
+            // ✅ Load candidates when page loads
+            window.onload = loadCandidates;
+        </script>
+    </body>
+</html>
