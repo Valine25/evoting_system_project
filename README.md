@@ -32,7 +32,9 @@ The database contains tables such as:
 ** Installation  **
 To set up the project locally, follow these steps:  
 1. Clone the repository:  
-   git clone <repository-url>
+```bash
+ git clone <repository-url>
+```
    
 2. Open the project in NetBeans as an Ant Web Application.
 3. Set up the MySQL database and import the provided schema.
